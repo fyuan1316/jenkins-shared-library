@@ -18,25 +18,31 @@ def scan(String repo, String branch, String credentialsId, String folder = ".", 
 
 def start(install=true) {
     // issue on scanner 
-    return this
+    // return this
     try {
         this.startToBitbucket(install)
     }
     catch (Exception exc) {
         echo "error scan bitbucket: ${exc}"
     }
-    this.startToSonar(install)
+    try {
+        this.startToSonar(install)
+    }
+    catch (Exception exc) {
+        echo "error scan sonar: ${exc}"
+    }
     return this
 }
 
 def startToBitbucket(install=true) {
     // issue on scanner 
-    return this
+    // return this
 
     def scannerCLI = "sonar-scanner";
     if (install) {
         def scannerHome = tool 'sonarqube';
         scannerCLI = "${scannerHome}/bin/sonar-scanner"
+        sh "chmod +x ${scannerHome}/bin/sonar-scanner || true"
     }
     
     withSonarQubeEnv('sonarqube') {
@@ -76,8 +82,9 @@ def startToSonar(install=true) {
     if (install) {
         def scannerHome = tool 'sonarqube';
         scannerCLI = "${scannerHome}/bin/sonar-scanner"
+        sh "chmod +x ${scannerHome}/bin/sonar-scanner || true"
     }
-    def scannerHome = tool 'sonarqube';
+    // def scannerHome = tool 'sonarqube';
     withSonarQubeEnv('sonarqube') {
         def isDebug = ""
         if (this.debug) {
@@ -127,8 +134,6 @@ def startToSonar(install=true) {
         //     }
         //     throw exc
         // }
-        
-        
     }
     return this
 }
